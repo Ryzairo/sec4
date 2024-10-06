@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beheerdersdashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='myfont/css/all.min.css')}}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <div id="dashboard">
+        <h2>Beheerdersdashboard</h2>
+        <div id="goedkeuren-onderzoeksaanvragen">
+            <h3>Goed te keuren onderzoeksaanvragen</h3>
+            <ul id="onderzoeksaanvragen-list"> 
+                {% for onderzoek in onderzoeksaanvragen %} 
+                    <li>{{ onderzoek.Titel }}</li>  
+                    <li>{{ onderzoek.Status }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+
+<script>
+    function updateOnderzoeksaanvragen() {
+        $.ajax({
+            url: '/api/goedkeuren/onderzoeksaanvragen',
+            type: 'GET',
+            success: function (data) {
+                
+                $('#onderzoeksaanvragen-list').empty();        // laat titel en status naast elkaar zien
+                for (var i = 0; i < data.length; i++) {
+                    $('#onderzoeksaanvragen-list').append('<li>' + data[i].Titel + ' - ' + data[i].Status + '</li>');
+                }
+            }
+        });
+    }
+
+   
+    $(document).ready(function () {
+        updateOnderzoeksaanvragen();
+        setInterval(updateOnderzoeksaanvragen, 5000);  // om de 5 sec update hij
+    });
+</script>
+
+</body>
+</html>
+
